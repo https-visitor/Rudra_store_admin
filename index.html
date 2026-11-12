@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUDRA STORE — Admin Control Panel</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: rgba(18, 24, 38, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass-glow: rgba(168, 85, 247, 0.35);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --primary-gradient: linear-gradient(135deg, #a855f7 0%, #d946ef 50%, #f59e0b 100%);
+            --accent-purple: #a855f7;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --shadow-glow: 0 8px 32px 0 rgba(168, 85, 247, 0.18);
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.45);
+        }
+        .btn-glass {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Login Screen */
+        #adminLoginScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.15), transparent 50%),
+                        radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.1), transparent 50%);
+        }
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 14px 20px;
+        }
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 24px auto;
+            padding: 0 20px 60px;
+            flex: 1;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 12px;
+        }
+        .admin-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .admin-tab.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-purple);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        @media(min-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            #adminChatGrid { grid-template-columns: 320px 1fr !important; }
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: white; }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-control:focus {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        textarea.form-control { resize: vertical; min-height: 70px; }
+
+        /* Toast */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: rgba(18, 24, 38, 0.95);
+            border: 1px solid var(--accent-purple);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.3s ease forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Admin PIN Login Screen -->
+    <div id="adminLoginScreen">
+        <div class="login-card">
+            <div style="width:60px; height:60px; border-radius:50%; background:rgba(168,85,247,0.15); border:1px solid var(--accent-purple); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.5rem; color:var(--accent-purple);">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:6px;">Admin <span class="gradient-text">Control Panel</span></h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Enter security PIN to access store management</p>
+            
+            <form onsubmit="event.preventDefault(); app.verifyAdminPin();">
+                <div class="form-group">
+                    <input type="password" id="adminPinInput" class="form-control" style="text-align:center; font-size:1.2rem; letter-spacing:6px;" placeholder="••••" maxlength="10" required autofocus>
+                </div>
+                <button type="submit" class="btn-gradient" style="width:100%; padding:12px; font-size:0.95rem;">
+                    <i class="fa-solid fa-unlock-keyhole"></i> Unlock Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Authenticated Admin Dashboard Wrapper -->
+    <div id="adminDashboardWrapper" style="display:none;">
+        <header>
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fa-solid fa-shield-halved gradient-text"></i>
+                    <span id="adminHeaderTitle" class="gradient-text">RUDRA ADMIN</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:0.75rem; color:var(--accent-green); background:rgba(16,185,129,0.12); padding:5px 10px; border-radius:99px; font-weight:700;">
+                        <i class="fa-solid fa-circle" style="font-size:7px;"></i> Live Sync
+                    </span>
+                    <button class="btn-glass" style="padding:7px 14px; font-size:0.82rem; color:var(--accent-red);" onclick="app.logoutAdmin()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Lock / Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Total Revenue</div>
+                    <div class="stat-value gradient-text" id="adminRevenue">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Total Orders</div>
+                    <div class="stat-value" id="adminTotalOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Pending Action</div>
+                    <div class="stat-value" style="color:var(--accent-gold);" id="adminPendingOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Active Products</div>
+                    <div class="stat-value" style="color:var(--accent-purple);" id="adminActiveProducts">0</div>
+                </div>
+            </div>
+
+            <div class="admin-nav">
+                <button class="admin-tab active" data-tab="products" onclick="app.switchAdminTab('products')">Products</button>
+                <button class="admin-tab" data-tab="orders" onclick="app.switchAdminTab('orders')">Orders</button>
+                <button class="admin-tab" data-tab="reviews" onclick="app.switchAdminTab('reviews')">Reviews & Moderation</button>
+                <button class="admin-tab" data-tab="chats" onclick="app.switchAdminTab('chats')">
+                    Live Chats <span id="unreadChatBadge" style="display:none; background:var(--accent-red); color:#fff; font-size:0.65rem; padding:1px 6px; border-radius:99px; margin-left:4px;">NEW</span>
+                </button>
+                <button class="admin-tab" data-tab="codeEditor" onclick="app.switchAdminTab('codeEditor')">
+                    <i class="fa-solid fa-code"></i> Find & Replace Code
+                </button>
+                <button class="admin-tab" data-tab="supportSettings" onclick="app.switchAdminTab('supportSettings')">Store & Support Settings</button>
+            </div>
+
+            <!-- Tab: Product Management -->
+            <div id="adminTabProducts">
+                <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+                    <button class="btn-gradient" style="padding:9px 18px; font-size:0.85rem;" onclick="app.openProductModal()">
+                        <i class="fa-solid fa-plus"></i> Add Product
+                    </button>
+                </div>
+                <div id="adminProductList" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+
+            <!-- Tab: Orders Management -->
+            <div id="adminTabOrders" style="display:none;">
+                <div id="adminOrderList" style="display:flex; flex-direction:column; gap:14px;"></div>
+            </div>
+
+            <!-- Tab: Reviews & Moderation -->
+            <div id="adminTabReviews" style="display:none;">
+                <h4 style="margin-bottom:12px;">Customer Product Reviews</h4>
+                <div id="adminReviewList" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+
+            <!-- Tab: Live Customer Chats -->
+            <div id="adminTabChats" style="display:none;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 16px;" id="adminChatGrid">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 14px;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 12px; color: var(--accent-purple);">
+                            <i class="fa-solid fa-users"></i> Customer Conversations
+                        </h4>
+                        <div id="adminChatThreadList" style="display: flex; flex-direction: column; gap: 8px; max-height: 450px; overflow-y: auto;">
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">No customer chats yet.</p>
+                        </div>
+                    </div>
+
+                    <div id="adminActiveChatBox" style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); display: flex; flex-direction: column; height: 480px; overflow: hidden;">
+                        <div style="margin: auto; text-align: center; color: var(--text-muted); padding: 20px;">
+                            <i class="fa-regular fa-comments" style="font-size: 2.5rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p style="font-size: 0.85rem;">Select a customer from the list to view & reply</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Live Find & Replace Code Editor -->
+            <div id="adminTabCodeEditor" style="display:none;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 850px;">
+                    <!-- Create / Edit Patch Box -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 20px;">
+                        <h3 style="margin-bottom: 6px; font-size: 1.1rem;">
+                            <i class="fa-solid fa-wand-magic-sparkles gradient-text"></i> User Panel Live Find & Replace
+                        </h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">
+                            User Panel (<code>index.html</code>) ke kisi bhi text, HTML tag, ya button code ko find karke live replace karein.
+                        </p>
+
+                        <input type="hidden" id="patchEditId">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="form-group">
+                                <label>Rule Name / Label *</label>
+                                <input type="text" id="patchTitle" class="form-control" placeholder="e.g. Change Banner Offer / Custom Badge">
+                            </div>
+                            <div class="form-group">
+                                <label>Patch Mode</label>
+                                <select id="patchTargetType" class="form-control" onchange="document.getElementById('patchFindGroup').style.display = this.value === 'css' ? 'none' : 'block'">
+                                    <option value="html">Find & Replace HTML / Text</option>
+                                    <option value="css">Inject Custom CSS Style</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="patchFindGroup">
+                            <label style="color: var(--accent-gold);">🔍 Find Code / Text (Exact match in User Panel):</label>
+                            <textarea id="patchFindCode" class="form-control" rows="3" style="font-family: monospace; font-size: 0.82rem;" placeholder="Paste exact text or HTML snippet to find..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: var(--accent-green);">✅ Replace With (New HTML / Text / CSS):</label>
+                            <textarea id="patchReplaceCode" class="form-control" rows="4" style="font-family: monospace; font-size: 0.82rem;" placeholder="Paste new replacement code here..."></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-gradient" style="flex: 1; padding: 11px;" onclick="app.saveCodePatch()">
+                                <i class="fa-solid fa-bolt"></i> Apply & Save Live Patch
+                            </button>
+                            <button class="btn-glass" style="padding: 11px 16px;" onclick="app.resetCodePatchForm()">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Patches List -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 20px;">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--accent-purple);">
+                            <i class="fa-solid fa-list-check"></i> Saved Find & Replace Rules
+                        </h4>
+                        <div id="adminCodePatchList" style="display: flex; flex-direction: column; gap: 10px;">
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">No active code patches yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Settings & Support links -->
+            <div id="adminTabSupportSettings" style="display:none;">
+                <div style="max-width:550px; background:var(--bg-card); padding:20px; border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                    <h3 style="margin-bottom:16px;">Support Channels & Store Details</h3>
+                    <div class="form-group">
+                        <label>Store Display Name</label>
+                        <input type="text" id="settingStoreName" class="form-control" placeholder="Store Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Top Banner Text</label>
+                        <input type="text" id="settingBannerText" class="form-control" placeholder="Banner text">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number (With country code)</label>
+                        <input type="text" id="settingWhatsapp" class="form-control" placeholder="919876543210">
+                    </div>
+                    <div class="form-group">
+                        <label>Support Gmail</label>
+                        <input type="email" id="settingGmail" class="form-control" placeholder="support@yourdomain.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Telegram Username / Link</label>
+                        <input type="text" id="settingTelegram" class="form-control" placeholder="apex_support">
+                    </div>
+                    <button class="btn-gradient" style="width:100%; padding:11px; margin-top:8px;" onclick="app.saveStoreSettings()">Save Settings</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Add/Edit Modal (Admin) -->
+    <div class="modal" id="adminProductModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="app.closeModal('adminProductModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin-bottom:14px;" id="adminProductModalTitle">Add Product</h3>
+            <input type="hidden" id="admProdId">
+            <div class="form-group">
+                <label>Product Name *</label>
+                <input type="text" id="admProdName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Category *</label>
+                <input type="text" id="admProdCategory" class="form-control" placeholder="e.g. Electronics, Fashion, Deals" required>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="form-group">
+                    <label>Selling Price (₹) *</label>
+                    <input type="number" id="admProdPrice" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Original Price (₹)</label>
+                    <input type="number" id="admProdOrigPrice" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Stock Count *</label>
+                <input type="number" id="admProdStock" class="form-control" value="10">
+            </div>
+
+            <!-- Multi-Tier Quantity Rupees Discount Section -->
+            <div class="form-group" style="background:rgba(168,85,247,0.06); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px;">
+                <label style="color:var(--accent-gold); margin-bottom:8px;">
+                    <i class="fa-solid fa-tags"></i> Bulk Quantity Offers (Extra ₹ Off per Unit)
+                </label>
+                <div style="display:flex; gap:6px; margin-bottom:8px;">
+                    <input type="number" id="admTierQtyInput" class="form-control" placeholder="Min Qty (e.g. 2)" min="2">
+                    <input type="number" id="admTierOffInput" class="form-control" placeholder="₹ Off per item (e.g. 100)" min="1">
+                    <button type="button" class="btn-gradient" style="padding:0 14px; font-size:0.8rem; white-space:nowrap;" onclick="app.addAdminBulkTier()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+                <div id="admBulkTiersList" style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="font-size:0.75rem; color:var(--text-muted);">No bulk tiers added yet</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Product Images (Upload from Device OR Add Image Links) *</label>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <label class="btn-glass" style="flex:1; padding:9px 12px; font-size:0.8rem; cursor:pointer; border:1px dashed var(--accent-purple); color:#fff; margin:0;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="color:var(--accent-purple);"></i> Upload Photos
+                        <input type="file" id="admProdFileUpload" accept="image/*" multiple style="display:none;" onchange="app.handleAdminImageFiles(event)">
+                    </label>
+                </div>
+
+                <div style="display:flex; gap:6px; margin-bottom:10px;">
+                    <input type="url" id="admProdUrlInput" class="form-control" placeholder="Paste image link (https://...)">
+                    <button type="button" class="btn-gradient" style="padding:0 14px; font-size:0.8rem; white-space:nowrap;" onclick="app.addAdminImageUrl()">
+                        <i class="fa-solid fa-plus"></i> Add Link
+                    </button>
+                </div>
+
+                <div id="admProdImagesPreview" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; background:rgba(0,0,0,0.25); padding:8px; border-radius:10px; border:1px solid var(--border-glass); min-height:68px;">
+                    <div style="grid-column:1/-1; text-align:center; font-size:0.75rem; color:var(--text-muted); padding:14px 0;">No images added yet</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="admProdDesc" class="form-control" placeholder="Enter product details"></textarea>
+            </div>
+            <button class="btn-gradient" style="width:100%; padding:11px;" onclick="app.saveAdminProduct()">Save to Catalog</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Target -->
+    <div id="toastContainer"></div>
+
+    <!-- Firebase v10 Modular SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, set, update, remove, onValue, push } 
+               from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDeJeap763kAEYjjCXaTP4EEDfvmE29hEw",
+            authDomain: "saurabhadmin-fd6cb.firebaseapp.com",
+            databaseURL: "https://saurabhadmin-fd6cb-default-rtdb.firebaseio.com",
+            projectId: "saurabhadmin-fd6cb",
+            storageBucket: "saurabhadmin-fd6cb.firebasestorage.app",
+            messagingSenderId: "1094207249669",
+            appId: "1:1094207249669:web:66b4c2f55805c44be52b6c"
+        };
+
+        const fbApp = initializeApp(firebaseConfig);
+        const db = getDatabase(fbApp);
+
+                window.state = {
+            products: {},
+            orders: {},
+            reviews: {},
+            blockedUsers: {},
+            chats: {},
+            activeChatId: null,
+            codePatches: {},
+            settings: {
+                storeName: "RUDRA STORE",
+                bannerText: "🚀 Special Launch Sale: Use code APEXNEW for free express shipping!",
+                currency: "₹",
+                whatsapp: "919876543210",
+                gmail: "support@apexstore.com",
+                telegram: "apexstore_support"
+            },
+            activeOrderStatus: 'All',
+            adminProductCategory: 'All',
+            adminProductSearch: '',
+            adminPin: '1234',
+            isAdmin: localStorage.getItem('rudra_admin_unlocked') === 'true'
+        };
+
+
+        const app = {
+            adminTempImages: [],
+            adminTempTiers: [],
+
+            init() {
+                if (state.isAdmin) {
+                    this.unlockDashboardUI();
+                }
+                this.setupRealtimeListeners();
+            },
+
+                        verifyAdminPin() {
+                const entered = document.getElementById('adminPinInput').value.trim();
+                if (entered === state.adminPin) {
+                    state.isAdmin = true;
+                    localStorage.setItem('rudra_admin_unlocked', 'true');
+                    this.unlockDashboardUI();
+                    this.showToast('🔓 Admin Panel Unlocked!');
+                } else {
+                    this.showToast('❌ Incorrect Security PIN!');
+                    document.getElementById('adminPinInput').value = '';
+                }
+            },
+
+            unlockDashboardUI() {
+                document.getElementById('adminLoginScreen').style.display = 'none';
+                document.getElementById('adminDashboardWrapper').style.display = 'block';
+                this.updateStats();
+                this.renderAdminProducts();
+                this.renderAdminOrders();
+                this.renderAdminReviews();
+                this.renderAdminChatList();
+                this.populateAdminSettings();
+            },
+
+            logoutAdmin() {
+                state.isAdmin = false;
+                localStorage.removeItem('rudra_admin_unlocked');
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('adminDashboardWrapper').style.display = 'none';
+                document.getElementById('adminLoginScreen').style.display = 'flex';
+                this.showToast('🔒 Admin Panel Locked');
+            },
+
+
+            setupRealtimeListeners() {
+                onValue(ref(db, 'products'), (snapshot) => {
+                    state.products = snapshot.val() || {};
+                    if (state.isAdmin) this.renderAdminProducts();
+                    this.updateStats();
+                });
+
+                onValue(ref(db, 'orders'), (snapshot) => {
+                    state.orders = snapshot.val() || {};
+                    this.updateStats();
+                    if (state.isAdmin) this.renderAdminOrders();
+                });
+
+                onValue(ref(db, 'settings'), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        state.settings = { ...state.settings, ...data };
+                        document.getElementById('adminHeaderTitle').innerText = `${state.settings.storeName} ADMIN`;
+                        if (state.isAdmin) this.populateAdminSettings();
+                    }
+                });
+
+                onValue(ref(db, 'reviews'), (snapshot) => {
+                    state.reviews = snapshot.val() || {};
+                    if (state.isAdmin) this.renderAdminReviews();
+                });
+
+                onValue(ref(db, 'blockedUsers'), (snapshot) => {
+                    state.blockedUsers = snapshot.val() || {};
+                    if (state.isAdmin) this.renderAdminReviews();
+                });
+
+                onValue(ref(db, 'supportChats'), (snapshot) => {
+                    state.chats = snapshot.val() || {};
+                    this.updateChatBadge();
+                    if (state.isAdmin) {
+                        this.renderAdminChatList();
+                        if (state.activeChatId) this.renderAdminActiveChat();
+                    }
+                });
+
+                onValue(ref(db, 'liveCodePatches'), (snapshot) => {
+                    state.codePatches = snapshot.val() || {};
+                    if (state.isAdmin) this.renderCodePatches();
+                });
+            },
+
+            switchAdminTab(tab) {
+                ['products', 'orders', 'reviews', 'chats', 'codeEditor', 'supportSettings'].forEach(t => {
+                    document.getElementById(`adminTab${t.charAt(0).toUpperCase() + t.slice(1)}`).style.display = (t === tab ? 'block' : 'none');
+                });
+                document.querySelectorAll('.admin-tab').forEach(b => {
+                    b.classList.toggle('active', b.dataset.tab === tab);
+                });
+                if (tab === 'chats') this.renderAdminChatList();
+                if (tab === 'codeEditor') this.renderCodePatches();
+            },
+
+            updateStats() {
+                const orders = Object.values(state.orders);
+                const revenue = orders.reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+                const pending = orders.filter(o => o.status !== "Delivered").length;
+                const activeProducts = Object.keys(state.products).length;
+
+                document.getElementById('adminRevenue').innerText = `₹${revenue.toLocaleString()}`;
+                document.getElementById('adminTotalOrders').innerText = orders.length;
+                document.getElementById('adminPendingOrders').innerText = pending;
+                document.getElementById('adminActiveProducts').innerText = activeProducts;
+            },
+
+            filterAdminProductCategory(cat) {
+                state.adminProductCategory = cat;
+                this.renderAdminProducts();
+            },
+
+            handleAdminProductSearch(query) {
+                state.adminProductSearch = query;
+                this.renderAdminProducts();
+            },
+
+            renderAdminProducts() {
+                const list = document.getElementById('adminProductList');
+                if (!list) return;
+
+                const allProds = Object.values(state.products || {});
+                const catSet = new Set(['All']);
+                allProds.forEach(p => {
+                    if (p.category && p.category.trim()) catSet.add(p.category.trim());
+                });
+                const categories = Array.from(catSet);
+
+                if (!categories.includes(state.adminProductCategory)) {
+                    state.adminProductCategory = 'All';
+                }
+
+                const controlsHtml = `
+                    <div style="margin-bottom:14px;">
+                        <div style="position:relative; margin-bottom:12px;">
+                            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
+                            <input type="text" id="adminProdSearchInput" class="form-control" 
+                                style="padding-left:38px;" 
+                                placeholder="Search products by name, category, or price..." 
+                                value="${(state.adminProductSearch || '').replace(/"/g, '&quot;')}" 
+                                oninput="app.handleAdminProductSearch(this.value)">
+                        </div>
+
+                        <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; border-bottom:1px solid var(--border-glass);">
+                            ${categories.map(cat => {
+                                const count = cat === 'All' 
+                                    ? allProds.length 
+                                    : allProds.filter(p => (p.category || '').trim() === cat).length;
+                                const isActive = state.adminProductCategory === cat;
+                                return `
+                                    <button onclick="app.filterAdminProductCategory('${cat.replace(/'/g, "\\'")}')" 
+                                        style="padding:6px 14px; border-radius:99px; font-size:0.78rem; font-weight:700; white-space:nowrap; cursor:pointer; display:flex; align-items:center; gap:6px; transition:var(--transition);
+                                        ${isActive 
+                                            ? 'background:var(--primary-gradient); color:#fff; border:none;' 
+                                            : 'background:rgba(255,255,255,0.05); color:var(--text-secondary); border:1px solid var(--border-glass);'}">
+                                        <span>${cat}</span>
+                                        <span style="background:rgba(0,0,0,0.35); padding:1px 7px; border-radius:99px; font-size:0.7rem;">${count}</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                let filtered = allProds;
+                if (state.adminProductCategory !== 'All') {
+                    filtered = filtered.filter(p => (p.category || '').trim() === state.adminProductCategory);
+                }
+                if (state.adminProductSearch && state.adminProductSearch.trim()) {
+                    const q = state.adminProductSearch.toLowerCase().trim();
+                    filtered = filtered.filter(p => 
+                        (p.name && p.name.toLowerCase().includes(q)) ||
+                        (p.category && p.category.toLowerCase().includes(q)) ||
+                        String(p.price).includes(q)
+                    );
+                }
+
+                const itemsHtml = filtered.length === 0 
+                    ? `<div style="text-align:center; padding:30px; background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); color:var(--text-muted);">
+                        <p style="font-size:0.85rem;">No products found matching your filter.</p>
+                       </div>`
+                    : filtered.map(p => `
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-card); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border-glass); gap:10px;">
+                            <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+                                <img src="${p.imageUrl}" style="width:45px; height:45px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+                                <div style="min-width:0;">
+                                    <div style="font-weight:700; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted);">
+                                        <span style="color:var(--accent-purple); font-weight:600;">${p.category}</span> | ₹${p.price} | Stock: ${p.stock}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px; flex-shrink:0;">
+                                <button class="btn-glass" style="padding:6px 12px; font-size:0.8rem;" onclick="app.editAdminProduct('${p.id}')">Edit</button>
+                                <button class="btn-glass" style="padding:6px 12px; font-size:0.8rem; color:var(--accent-red);" onclick="app.deleteAdminProduct('${p.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                list.innerHTML = controlsHtml + itemsHtml;
+
+                if (state.adminProductSearch) {
+                    const inp = document.getElementById('adminProdSearchInput');
+                    if (inp) {
+                        inp.focus();
+                        inp.setSelectionRange(inp.value.length, inp.value.length);
+                    }
+                }
+            },
+
+            renderAdminImagePreviews() {
+                const box = document.getElementById('admProdImagesPreview');
+                if (!box) return;
+
+                if (!this.adminTempImages || this.adminTempImages.length === 0) {
+                    box.innerHTML = `<div style="grid-column:1/-1; text-align:center; font-size:0.75rem; color:var(--text-muted); padding:14px 0;">No images added yet (Upload or add link)</div>`;
+                    return;
+                }
+
+                box.innerHTML = this.adminTempImages.map((src, idx) => `
+                    <div style="position:relative; aspect-ratio:1/1; border-radius:8px; overflow:hidden; border:${idx === 0 ? '2px solid var(--accent-gold)' : '1px solid var(--border-glass)'}; background:#111;">
+                        <img src="${src}" style="width:100%; height:100%; object-fit:cover;">
+                        ${idx === 0 ? `<span style="position:absolute; bottom:2px; left:2px; background:var(--accent-gold); color:#000; font-size:0.55rem; font-weight:800; padding:1px 4px; border-radius:4px;">MAIN</span>` : ''}
+                        <button type="button" onclick="app.removeAdminImage(${idx})" style="position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; background:rgba(239,68,68,0.9); color:#fff; border:none; font-size:0.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            addAdminImageUrl() {
+                const inp = document.getElementById('admProdUrlInput');
+                const url = inp.value.trim();
+                if (!url) {
+                    this.showToast('Please paste an image URL first.');
+                    return;
+                }
+                this.adminTempImages.push(url);
+                inp.value = '';
+                this.renderAdminImagePreviews();
+            },
+
+            removeAdminImage(index) {
+                this.adminTempImages.splice(index, 1);
+                this.renderAdminImagePreviews();
+            },
+
+            handleAdminImageFiles(event) {
+                const files = Array.from(event.target.files || []);
+                if (!files.length) return;
+
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_SIZE = 700;
+                            let w = img.width;
+                            let h = img.height;
+                            if (w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; }
+                            else if (h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; }
+                            canvas.width = w;
+                            canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.78);
+                            this.adminTempImages.push(compressedDataUrl);
+                            this.renderAdminImagePreviews();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                event.target.value = '';
+                this.showToast(`${files.length} image(s) added!`);
+            },
+
+            renderAdminBulkTiers() {
+                const box = document.getElementById('admBulkTiersList');
+                if (!box) return;
+
+                if (!this.adminTempTiers || this.adminTempTiers.length === 0) {
+                    box.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted);">No bulk tiers added yet</div>`;
+                    return;
+                }
+
+                this.adminTempTiers.sort((a, b) => a.qty - b.qty);
+
+                box.innerHTML = this.adminTempTiers.map((t, idx) => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.35); border:1px solid var(--border-glass); padding:6px 10px; border-radius:8px; font-size:0.8rem;">
+                        <span>
+                            Buy <strong style="color:var(--accent-purple);">${t.qty}+ units</strong> ➔ Get <strong style="color:var(--accent-green);">₹${t.discount} OFF</strong> / item
+                        </span>
+                        <button type="button" onclick="app.removeAdminBulkTier(${idx})" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem;">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            addAdminBulkTier() {
+                const qtyInp = document.getElementById('admTierQtyInput');
+                const offInp = document.getElementById('admTierOffInput');
+                const qty = parseInt(qtyInp.value);
+                const discount = parseInt(offInp.value);
+
+                if (!qty || qty < 2 || !discount || discount <= 0) {
+                    this.showToast('Enter valid Min Qty (2+) and Rupees Off amount.');
+                    return;
+                }
+
+                const existingIdx = this.adminTempTiers.findIndex(t => t.qty === qty);
+                if (existingIdx !== -1) {
+                    this.adminTempTiers[existingIdx].discount = discount;
+                } else {
+                    this.adminTempTiers.push({ qty, discount });
+                }
+
+                qtyInp.value = '';
+                offInp.value = '';
+                this.renderAdminBulkTiers();
+            },
+
+            removeAdminBulkTier(idx) {
+                this.adminTempTiers.splice(idx, 1);
+                this.renderAdminBulkTiers();
+            },
+
+            openProductModal(prodId = null) {
+                document.getElementById('adminProductModalTitle').innerText = prodId ? 'Edit Product' : 'Add New Product';
+                document.getElementById('admProdId').value = prodId || '';
+                document.getElementById('admProdUrlInput').value = '';
+                document.getElementById('admTierQtyInput').value = '';
+                document.getElementById('admTierOffInput').value = '';
+
+                if (prodId && state.products[prodId]) {
+                    const p = state.products[prodId];
+                    document.getElementById('admProdName').value = p.name || '';
+                    document.getElementById('admProdCategory').value = p.category || '';
+                    document.getElementById('admProdPrice').value = p.price || '';
+                    document.getElementById('admProdOrigPrice').value = p.originalPrice || '';
+                    document.getElementById('admProdStock').value = p.stock || 0;
+                    document.getElementById('admProdDesc').value = p.description || '';
+
+                    const combined = [p.imageUrl, ...(p.gallery || [])].filter(Boolean);
+                    this.adminTempImages = [...new Set(combined)];
+                    this.adminTempTiers = Array.isArray(p.bulkTiers) ? JSON.parse(JSON.stringify(p.bulkTiers)) : [];
+                } else {
+                    document.getElementById('admProdName').value = '';
+                    document.getElementById('admProdCategory').value = '';
+                    document.getElementById('admProdPrice').value = '';
+                    document.getElementById('admProdOrigPrice').value = '';
+                    document.getElementById('admProdStock').value = 15;
+                    document.getElementById('admProdDesc').value = '';
+                    this.adminTempImages = [];
+                    this.adminTempTiers = [];
+                }
+
+                this.renderAdminImagePreviews();
+                this.renderAdminBulkTiers();
+                this.openModal('adminProductModal');
+            },
+
+            editAdminProduct(id) {
+                this.openProductModal(id);
+            },
+
+            saveAdminProduct() {
+                const id = document.getElementById('admProdId').value || ('prod_' + Date.now());
+                const name = document.getElementById('admProdName').value.trim();
+                const category = document.getElementById('admProdCategory').value.trim();
+                const price = Number(document.getElementById('admProdPrice').value);
+                const originalPrice = Number(document.getElementById('admProdOrigPrice').value) || Math.round(price * 1.3);
+                const stock = Number(document.getElementById('admProdStock').value) || 0;
+                const description = document.getElementById('admProdDesc').value.trim();
+
+                const pendingQty = parseInt(document.getElementById('admTierQtyInput')?.value);
+                const pendingOff = parseInt(document.getElementById('admTierOffInput')?.value);
+                if (pendingQty >= 2 && pendingOff > 0) {
+                    const existIdx = this.adminTempTiers.findIndex(t => Number(t.qty) === pendingQty);
+                    if (existIdx !== -1) {
+                        this.adminTempTiers[existIdx].discount = pendingOff;
+                    } else {
+                        this.adminTempTiers.push({ qty: pendingQty, discount: pendingOff });
+                    }
+                }
+
+                if (!name || !category || !price || this.adminTempImages.length === 0) {
+                    this.showToast('Please fill Name, Category, Price and add at least 1 Image.');
+                    return;
+                }
+
+                const imageUrl = this.adminTempImages[0];
+                const gallery = [...this.adminTempImages];
+                const bulkTiers = [...this.adminTempTiers]
+                    .map(t => ({ qty: Number(t.qty), discount: Number(t.discount) }))
+                    .sort((a, b) => a.qty - b.qty);
+
+                const payload = {
+                    id, name, category, price, originalPrice, stock, bulkTiers, imageUrl, gallery, description
+                };
+
+                set(ref(db, `products/${id}`), payload).then(() => {
+                    this.showToast('Product & quantity tiers saved to Firebase!');
+                    this.closeModal('adminProductModal');
+                });
+            },
+
+            deleteAdminProduct(id) {
+                if (confirm('Delete this product permanently from the database?')) {
+                    remove(ref(db, `products/${id}`)).then(() => {
+                        this.showToast('Product removed.');
+                    });
+                }
+            },
+
+            filterAdminOrders(status) {
+                state.activeOrderStatus = status;
+                this.renderAdminOrders();
+            },
+
+            renderAdminOrders() {
+                const list = document.getElementById('adminOrderList');
+                if (!list) return;
+
+                const allEntries = Object.entries(state.orders).sort((a,b) => b[1].timestamp - a[1].timestamp);
+                const statuses = ['All', 'Confirmed', 'Packed', 'Shipped', 'Out for delivery', 'Delivered'];
+                const counts = { All: allEntries.length };
+                statuses.slice(1).forEach(st => {
+                    counts[st] = allEntries.filter(([_, o]) => (o.status || 'Confirmed') === st).length;
+                });
+
+                const tabsHtml = `
+                    <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:14px; border-bottom:1px solid var(--border-glass);">
+                        ${statuses.map(st => {
+                            const isActive = state.activeOrderStatus === st;
+                            const label = st === 'Shipped' ? 'Placed / Shipped' : st;
+                            return `
+                                <button onclick="app.filterAdminOrders('${st}')" 
+                                    style="padding:7px 14px; border-radius:99px; font-size:0.78rem; font-weight:700; white-space:nowrap; cursor:pointer; display:flex; align-items:center; gap:6px; transition:var(--transition);
+                                    ${isActive 
+                                        ? 'background:var(--primary-gradient); color:#fff; border:none;' 
+                                        : 'background:rgba(255,255,255,0.05); color:var(--text-secondary); border:1px solid var(--border-glass);'}">
+                                    <span>${label}</span>
+                                    <span style="background:rgba(0,0,0,0.35); padding:1px 7px; border-radius:99px; font-size:0.7rem;">${counts[st] || 0}</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+
+                const filteredEntries = state.activeOrderStatus === 'All'
+                    ? allEntries
+                    : allEntries.filter(([_, ord]) => (ord.status || 'Confirmed') === state.activeOrderStatus);
+
+                if (filteredEntries.length === 0) {
+                    list.innerHTML = tabsHtml + `
+                        <div style="text-align:center; padding:36px 20px; background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); color:var(--text-muted);">
+                            <i class="fa-solid fa-box-open" style="font-size:2rem; margin-bottom:8px; opacity:0.5;"></i>
+                            <p style="font-size:0.85rem;">No orders found in <strong>"${state.activeOrderStatus}"</strong> list.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                list.innerHTML = tabsHtml + filteredEntries.map(([key, ord]) => {
+                    const cleanPhone = (ord.phone || '').replace(/[^0-9]/g, '');
+                    const orderedItemsHtml = (ord.items || []).map(item => {
+                        const prodInfo = state.products[item.productId] || {};
+                        const imgSrc = prodInfo.imageUrl || 'https://via.placeholder.com/50';
+                        return `
+                            <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); padding:8px 10px; border-radius:10px; margin-bottom:6px;">
+                                <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                                    <img src="${imgSrc}" style="width:42px; height:42px; border-radius:8px; object-fit:cover; background:#111;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.85rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</div>
+                                        <div style="font-size:0.75rem; color:var(--text-secondary);">Qty: <strong style="color:#fff;">${item.qty}</strong> × ₹${item.price}</div>
+                                    </div>
+                                </div>
+                                <div style="font-size:0.85rem; font-weight:800; color:var(--accent-gold);">
+                                    ₹${(item.price * item.qty).toLocaleString()}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const totalAmt = Number(ord.totalAmount) || 0;
+                    const paidAmt = Number(ord.paidAmount) || 0;
+                    const pendingAmt = Math.max(0, totalAmt - paidAmt);
+                    const isFullyPaid = pendingAmt === 0 && totalAmt > 0;
+
+                    return `
+                        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">
+                                <div>
+                                    <h4 style="font-size:1rem; font-weight:800; color:var(--accent-purple);">#${ord.orderId}</h4>
+                                    <div style="font-size:0.75rem; color:var(--text-muted);">${new Date(ord.timestamp).toLocaleString()}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <span style="font-size:1.15rem; font-weight:800;" class="gradient-text">₹${totalAmt.toLocaleString()}</span>
+                                    <div style="font-size:0.72rem; color:var(--accent-green); font-weight:600;">${ord.paymentMethod}</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:12px;">
+                                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">
+                                    <i class="fa-solid fa-box-open"></i> Ordered Items (${(ord.items || []).length}):
+                                </div>
+                                ${orderedItemsHtml || '<p style="font-size:0.8rem; color:var(--text-muted);">No items data</p>'}
+                            </div>
+
+                            <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:10px; padding:12px; margin-bottom:12px; font-size:0.85rem; line-height:1.6;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Customer & Shipping Info</span>
+                                    <button class="btn-glass" style="padding:4px 10px; font-size:0.75rem; border-color:var(--accent-purple); color:#fff;" onclick="app.copyOrderDetails('${key}')">
+                                        <i class="fa-regular fa-copy"></i> Copy Details
+                                    </button>
+                                </div>
+                                <div><strong>Name:</strong> ${ord.customerName}</div>
+                                <div>
+                                    <strong>Mobile:</strong> ${ord.phone} 
+                                    <a href="https://wa.me/${cleanPhone}" target="_blank" style="color:var(--accent-green); text-decoration:none; margin-left:8px; font-weight:600;">
+                                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                                    </a>
+                                </div>
+                                <div><strong>Address:</strong> ${ord.address}</div>
+                            </div>
+
+                            <div style="background:rgba(168,85,247,0.08); border:1px solid ${isFullyPaid ? 'rgba(16,185,129,0.4)' : 'rgba(245,158,11,0.4)'}; border-radius:10px; padding:10px 12px; margin-bottom:12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                                    <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--text-primary);">
+                                        <i class="fa-solid fa-wallet" style="color:var(--accent-gold);"></i> Payment Status
+                                    </span>
+                                    <div style="display:flex; gap:8px; font-size:0.78rem; font-weight:700;">
+                                        <span style="background:rgba(16,185,129,0.18); color:#10b981; padding:3px 9px; border-radius:99px;">
+                                            Paid: ₹${paidAmt.toLocaleString()}
+                                        </span>
+                                        <span style="background:${pendingAmt > 0 ? 'rgba(239,68,68,0.18)' : 'rgba(16,185,129,0.18)'}; color:${pendingAmt > 0 ? '#ef4444' : '#10b981'}; padding:3px 9px; border-radius:99px;">
+                                            ${pendingAmt > 0 ? `Pending: ₹${pendingAmt.toLocaleString()}` : 'Fully Paid ✓'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <input type="number" id="payInput-${key}" class="form-control" style="padding:6px 10px; font-size:0.8rem;" value="${paidAmt}" min="0" max="${totalAmt}" placeholder="Enter Paid ₹">
+                                    <button class="btn-gradient" style="padding:6px 12px; font-size:0.78rem; white-space:nowrap; border-radius:8px;" onclick="app.updateOrderPayment('${key}', ${totalAmt})">
+                                        Save Paid
+                                    </button>
+                                    <button class="btn-glass" style="padding:6px 10px; font-size:0.75rem; white-space:nowrap; color:#10b981; border-color:rgba(16,185,129,0.4);" onclick="document.getElementById('payInput-${key}').value=${totalAmt}; app.updateOrderPayment('${key}', ${totalAmt})">
+                                        Full Paid
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:8px;">
+                                <span style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">Order Status:</span>
+                                <select class="form-control" style="width:auto; padding:6px 12px; font-size:0.8rem; font-weight:600;" onchange="app.updateOrderStatus('${key}', this.value)">
+                                    <option value="Confirmed" ${ord.status==='Confirmed'?'selected':''}>Confirmed</option>
+                                    <option value="Packed" ${ord.status==='Packed'?'selected':''}>Packed</option>
+                                    <option value="Shipped" ${ord.status==='Shipped'?'selected':''}>Shipped</option>
+                                    <option value="Out for delivery" ${ord.status==='Out for delivery'?'selected':''}>Out for delivery</option>
+                                    <option value="Delivered" ${ord.status==='Delivered'?'selected':''}>Delivered</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            updateOrderPayment(dbKey, totalAmount) {
+                const input = document.getElementById(`payInput-${dbKey}`);
+                if (!input) return;
+
+                let paid = Number(input.value) || 0;
+                if (paid < 0) paid = 0;
+                if (paid > totalAmount) paid = totalAmount;
+
+                update(ref(db, `orders/${dbKey}`), { paidAmount: paid }).then(() => {
+                    const pending = Math.max(0, totalAmount - paid);
+                    this.showToast(`Payment updated! Paid: ₹${paid} | Pending: ₹${pending}`);
+                });
+            },
+
+            copyOrderDetails(dbKey) {
+                const ord = state.orders[dbKey];
+                if (!ord) return;
+
+                const itemsSummary = (ord.items || []).map(i => `• ${i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join('\n');
+                const copyText = 
+`Order ID: #${ord.orderId}
+Name: ${ord.customerName}
+Mobile: ${ord.phone}
+Address: ${ord.address}
+Payment: ${ord.paymentMethod} | Total: ₹${ord.totalAmount}
+
+Ordered Items:
+${itemsSummary}`;
+
+                navigator.clipboard.writeText(copyText).then(() => {
+                    this.showToast('📋 Customer & Order details copied to clipboard!');
+                }).catch(() => {
+                    const temp = document.createElement('textarea');
+                    temp.value = copyText;
+                    document.body.appendChild(temp);
+                    temp.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(temp);
+                    this.showToast('📋 Customer & Order details copied!');
+                });
+            },
+
+            updateOrderStatus(dbKey, newStatus) {
+                const updateData = { status: newStatus };
+                if (newStatus === 'Delivered') {
+                    updateData.deliveredAt = Date.now();
+                }
+
+                update(ref(db, `orders/${dbKey}`), updateData).then(() => {
+                    this.showToast(`Order status updated to "${newStatus}"`);
+                });
+            },
+
+            renderAdminReviews() {
+                const list = document.getElementById('adminReviewList');
+                if (!list) return;
+
+                const entries = Object.entries(state.reviews);
+                if (entries.length === 0) {
+                    list.innerHTML = `<p style="color:var(--text-muted);">No user reviews submitted yet.</p>`;
+                    return;
+                }
+
+                list.innerHTML = entries.map(([key, rev]) => {
+                    const isBlocked = state.blockedUsers && state.blockedUsers[rev.author];
+                    return `
+                        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <strong>${rev.author}</strong>
+                                    <span style="color:var(--accent-gold); font-size:0.75rem;">★ ${rev.rating}</span>
+                                    ${isBlocked ? '<span style="font-size:0.7rem; color:var(--accent-red);">(Blocked User)</span>' : ''}
+                                </div>
+                                <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:3px;">${rev.comment}</div>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn-glass" style="padding:4px 10px; font-size:0.75rem; color:var(--accent-gold);" onclick="app.toggleBlockUser('${rev.author}')">
+                                    ${isBlocked ? 'Unblock User' : 'Block User'}
+                                </button>
+                                <button class="btn-glass" style="padding:4px 10px; font-size:0.75rem; color:var(--accent-red);" onclick="app.deleteReview('${key}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            deleteReview(revKey) {
+                if (confirm('Delete this user review?')) {
+                    remove(ref(db, `reviews/${revKey}`)).then(() => {
+                        this.showToast('Review removed.');
+                    });
+                }
+            },
+
+            toggleBlockUser(userIdentifier) {
+                const isBlocked = state.blockedUsers && state.blockedUsers[userIdentifier];
+                if (isBlocked) {
+                    remove(ref(db, `blockedUsers/${userIdentifier}`)).then(() => {
+                        this.showToast(`Unblocked ${userIdentifier}`);
+                    });
+                } else {
+                    set(ref(db, `blockedUsers/${userIdentifier}`), true).then(() => {
+                        this.showToast(`User ${userIdentifier} restricted from writing reviews.`);
+                    });
+                }
+            },
+
+            populateAdminSettings() {
+                const s = state.settings;
+                document.getElementById('settingStoreName').value = s.storeName || '';
+                document.getElementById('settingBannerText').value = s.bannerText || '';
+                document.getElementById('settingWhatsapp').value = s.whatsapp || '';
+                document.getElementById('settingGmail').value = s.gmail || '';
+                document.getElementById('settingTelegram').value = s.telegram || '';
+            },
+
+            saveStoreSettings() {
+                const payload = {
+                    storeName: document.getElementById('settingStoreName').value.trim(),
+                    bannerText: document.getElementById('settingBannerText').value.trim(),
+                    whatsapp: document.getElementById('settingWhatsapp').value.trim(),
+                    gmail: document.getElementById('settingGmail').value.trim(),
+                    telegram: document.getElementById('settingTelegram').value.trim()
+                };
+
+                                update(ref(db, 'settings'), payload).then(() => {
+                    this.showToast('Store settings saved successfully!');
+                });
+            },
+
+            updateChatBadge() {
+                const badge = document.getElementById('unreadChatBadge');
+                if (!badge) return;
+                const hasUnread = Object.values(state.chats || {}).some(c => c.unreadByAdmin);
+                badge.style.display = hasUnread ? 'inline-block' : 'none';
+            },
+
+            renderAdminChatList() {
+                const list = document.getElementById('adminChatThreadList');
+                if (!list) return;
+
+                const threads = Object.values(state.chats || {}).sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0));
+                if (threads.length === 0) {
+                    list.innerHTML = `<p style="font-size:0.8rem; color:var(--text-muted);">No customer messages yet.</p>`;
+                    return;
+                }
+
+                list.innerHTML = threads.map(chat => {
+                    const isSelected = state.activeChatId === chat.chatId;
+                    return `
+                        <div onclick="app.selectAdminChat('${chat.chatId}')" style="padding: 10px 12px; border-radius: 12px; cursor: pointer; border: 1px solid ${isSelected ? 'var(--accent-purple)' : 'var(--border-glass)'}; background: ${isSelected ? 'rgba(168,85,247,0.15)' : 'rgba(255,255,255,0.02)'}; transition: var(--transition);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.85rem;">${chat.customerName || 'Customer'}</strong>
+                                ${chat.unreadByAdmin ? `<span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);"></span>` : ''}
+                            </div>
+                            <div style="font-size: 0.72rem; color: var(--accent-gold); margin-top: 2px;">${chat.phone || ''}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;">
+                                ${chat.lastMessage || ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            selectAdminChat(chatId) {
+                state.activeChatId = chatId;
+                update(ref(db, `supportChats/${chatId}`), { unreadByAdmin: false });
+                this.renderAdminChatList();
+                this.renderAdminActiveChat();
+            },
+
+            renderAdminActiveChat() {
+                const box = document.getElementById('adminActiveChatBox');
+                if (!box || !state.activeChatId || !state.chats[state.activeChatId]) return;
+
+                const chat = state.chats[state.activeChatId];
+                const msgs = Object.values(chat.messages || {}).sort((a, b) => a.timestamp - b.timestamp);
+
+                box.innerHTML = `
+                    <div style="padding: 12px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-size: 0.95rem; font-weight: 800;">${chat.customerName || 'Customer'}</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">${chat.phone || chat.chatId}</span>
+                        </div>
+                        <button class="btn-glass" style="padding: 5px 10px; font-size: 0.75rem; color: var(--accent-red);" onclick="app.deleteAdminChat('${chat.chatId}')">
+                            <i class="fa-solid fa-trash"></i> Clear Chat
+                        </button>
+                    </div>
+
+                    <div id="adminChatMsgScroll" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+                        ${msgs.map(m => {
+                            const isAdmin = m.sender === 'admin';
+                            const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            return `
+                                <div style="align-self: ${isAdmin ? 'flex-end' : 'flex-start'}; max-width: 75%; background: ${isAdmin ? 'var(--primary-gradient)' : 'rgba(255,255,255,0.08)'}; color: #fff; padding: 9px 14px; border-radius: ${isAdmin ? '16px 16px 4px 16px' : '16px 16px 16px 4px'}; font-size: 0.85rem;">
+                                    <div>${m.text}</div>
+                                    <div style="font-size: 0.65rem; opacity: 0.75; text-align: right; margin-top: 3px;">${time}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); app.sendAdminChatReply();" style="padding: 12px; border-top: 1px solid var(--border-glass); display: flex; gap: 8px; background: rgba(15,23,42,0.9);">
+                        <input type="text" id="adminChatReplyInput" class="form-control" placeholder="Write a reply to customer..." style="border-radius: 99px;" autocomplete="off" required>
+                        <button type="submit" class="btn-gradient" style="padding: 0 18px; border-radius: 99px;">
+                            <i class="fa-solid fa-paper-plane"></i> Send
+                        </button>
+                    </form>
+                `;
+
+                const scrollBox = document.getElementById('adminChatMsgScroll');
+                if (scrollBox) scrollBox.scrollTop = scrollBox.scrollHeight;
+            },
+
+            sendAdminChatReply() {
+                const input = document.getElementById('adminChatReplyInput');
+                const text = input.value.trim();
+                if (!text || !state.activeChatId) return;
+
+                const chatId = state.activeChatId;
+                update(ref(db, `supportChats/${chatId}`), {
+                    lastMessage: 'Admin: ' + text,
+                    lastUpdated: Date.now(),
+                    unreadByAdmin: false
+                });
+
+                const msgRef = push(ref(db, `supportChats/${chatId}/messages`));
+                set(msgRef, {
+                    sender: 'admin',
+                    text: text,
+                    timestamp: Date.now()
+                }).then(() => {
+                    input.value = '';
+                });
+            },
+
+            deleteAdminChat(chatId) {
+                if (confirm('Delete this customer conversation permanently?')) {
+                    remove(ref(db, `supportChats/${chatId}`)).then(() => {
+                        state.activeChatId = null;
+                        document.getElementById('adminActiveChatBox').innerHTML = `<div style="margin:auto; text-align:center; color:var(--text-muted); padding:20px;"><p style="font-size:0.85rem;">Chat deleted. Select another conversation.</p></div>`;
+                        this.showToast('Chat thread deleted.');
+                    });
+                }
+            },
+
+            openModal(modalId) {
+
+            },
+
+            updateChatBadge() {
+                const badge = document.getElementById('unreadChatBadge');
+                if (!badge) return;
+                const hasUnread = Object.values(state.chats || {}).some(c => c.unreadByAdmin);
+                badge.style.display = hasUnread ? 'inline-block' : 'none';
+            },
+
+            renderAdminChatList() {
+                const list = document.getElementById('adminChatThreadList');
+                if (!list) return;
+
+                const threads = Object.values(state.chats || {}).sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0));
+                if (threads.length === 0) {
+                    list.innerHTML = `<p style="font-size:0.8rem; color:var(--text-muted);">No customer messages yet.</p>`;
+                    return;
+                }
+
+                list.innerHTML = threads.map(chat => {
+                    const isSelected = state.activeChatId === chat.chatId;
+                    return `
+                        <div onclick="app.selectAdminChat('${chat.chatId}')" style="padding: 10px 12px; border-radius: 12px; cursor: pointer; border: 1px solid ${isSelected ? 'var(--accent-purple)' : 'var(--border-glass)'}; background: ${isSelected ? 'rgba(168,85,247,0.15)' : 'rgba(255,255,255,0.02)'}; transition: var(--transition);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.85rem;">${chat.customerName || 'Customer'}</strong>
+                                ${chat.unreadByAdmin ? `<span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);"></span>` : ''}
+                            </div>
+                            <div style="font-size: 0.72rem; color: var(--accent-gold); margin-top: 2px;">${chat.phone || ''}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;">
+                                ${chat.lastMessage || ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            selectAdminChat(chatId) {
+                state.activeChatId = chatId;
+                update(ref(db, `supportChats/${chatId}`), { unreadByAdmin: false });
+                this.renderAdminChatList();
+                this.renderAdminActiveChat();
+            },
+
+            renderAdminActiveChat() {
+                const box = document.getElementById('adminActiveChatBox');
+                if (!box || !state.activeChatId || !state.chats[state.activeChatId]) return;
+
+                const chat = state.chats[state.activeChatId];
+                const msgs = Object.values(chat.messages || {}).sort((a, b) => a.timestamp - b.timestamp);
+
+                box.innerHTML = `
+                    <div style="padding: 12px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-size: 0.95rem; font-weight: 800;">${chat.customerName || 'Customer'}</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">${chat.phone || chat.chatId}</span>
+                        </div>
+                        <button class="btn-glass" style="padding: 5px 10px; font-size: 0.75rem; color: var(--accent-red);" onclick="app.deleteAdminChat('${chat.chatId}')">
+                            <i class="fa-solid fa-trash"></i> Clear Chat
+                        </button>
+                    </div>
+
+                    <div id="adminChatMsgScroll" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+                        ${msgs.map(m => {
+                            const isAdmin = m.sender === 'admin';
+                            const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            return `
+                                <div style="align-self: ${isAdmin ? 'flex-end' : 'flex-start'}; max-width: 75%; background: ${isAdmin ? 'var(--primary-gradient)' : 'rgba(255,255,255,0.08)'}; color: #fff; padding: 9px 14px; border-radius: ${isAdmin ? '16px 16px 4px 16px' : '16px 16px 16px 4px'}; font-size: 0.85rem;">
+                                    <div>${m.text}</div>
+                                    <div style="font-size: 0.65rem; opacity: 0.75; text-align: right; margin-top: 3px;">${time}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); app.sendAdminChatReply();" style="padding: 12px; border-top: 1px solid var(--border-glass); display: flex; gap: 8px; background: rgba(15,23,42,0.9);">
+                        <input type="text" id="adminChatReplyInput" class="form-control" placeholder="Write a reply to customer..." style="border-radius: 99px;" autocomplete="off" required>
+                        <button type="submit" class="btn-gradient" style="padding: 0 18px; border-radius: 99px;">
+                            <i class="fa-solid fa-paper-plane"></i> Send
+                        </button>
+                    </form>
+                `;
+
+                const scrollBox = document.getElementById('adminChatMsgScroll');
+                if (scrollBox) scrollBox.scrollTop = scrollBox.scrollHeight;
+            },
+
+            sendAdminChatReply() {
+                const input = document.getElementById('adminChatReplyInput');
+                const text = input.value.trim();
+                if (!text || !state.activeChatId) return;
+
+                const chatId = state.activeChatId;
+                update(ref(db, `supportChats/${chatId}`), {
+                    lastMessage: 'Admin: ' + text,
+                    lastUpdated: Date.now(),
+                    unreadByAdmin: false
+                });
+
+                const msgRef = push(ref(db, `supportChats/${chatId}/messages`));
+                set(msgRef, {
+                    sender: 'admin',
+                    text: text,
+                    timestamp: Date.now()
+                }).then(() => {
+                    input.value = '';
+                });
+            },
+
+            deleteAdminChat(chatId) {
+                if (confirm('Delete this customer conversation permanently?')) {
+                    remove(ref(db, `supportChats/${chatId}`)).then(() => {
+                        state.activeChatId = null;
+                        document.getElementById('adminActiveChatBox').innerHTML = `<div style="margin:auto; text-align:center; color:var(--text-muted); padding:20px;"><p style="font-size:0.85rem;">Chat deleted. Select another conversation.</p></div>`;
+                        this.showToast('Chat thread deleted.');
+                    });
+                }
+            },
+
+            saveCodePatch() {
+                const id = document.getElementById('patchEditId').value || ('patch_' + Date.now());
+                const title = document.getElementById('patchTitle').value.trim() || 'Custom Rule';
+                const targetType = document.getElementById('patchTargetType').value;
+                const findCode = targetType === 'css' ? 'CSS_INJECT' : document.getElementById('patchFindCode').value;
+                const replaceCode = document.getElementById('patchReplaceCode').value;
+
+                if (targetType === 'html' && !findCode.trim()) {
+                    this.showToast('Please enter the code or text you want to Find.');
+                    return;
+                }
+
+                const payload = {
+                    id,
+                    title,
+                    targetType,
+                    findCode,
+                    replaceCode,
+                    active: true,
+                    updatedAt: Date.now()
+                };
+
+                set(ref(db, `liveCodePatches/${id}`), payload).then(() => {
+                    this.showToast('✅ Live patch applied to User Panel!');
+                    this.resetCodePatchForm();
+                });
+            },
+
+            resetCodePatchForm() {
+                document.getElementById('patchEditId').value = '';
+                document.getElementById('patchTitle').value = '';
+                document.getElementById('patchTargetType').value = 'html';
+                document.getElementById('patchFindGroup').style.display = 'block';
+                document.getElementById('patchFindCode').value = '';
+                document.getElementById('patchReplaceCode').value = '';
+            },
+
+            editCodePatch(id) {
+                const p = state.codePatches[id];
+                if (!p) return;
+                document.getElementById('patchEditId').value = p.id;
+                document.getElementById('patchTitle').value = p.title || '';
+                document.getElementById('patchTargetType').value = p.targetType || 'html';
+                document.getElementById('patchFindGroup').style.display = p.targetType === 'css' ? 'none' : 'block';
+                document.getElementById('patchFindCode').value = p.targetType === 'css' ? '' : (p.findCode || '');
+                document.getElementById('patchReplaceCode').value = p.replaceCode || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            toggleCodePatch(id) {
+                const p = state.codePatches[id];
+                if (!p) return;
+                update(ref(db, `liveCodePatches/${id}`), { active: p.active === false }).then(() => {
+                    this.showToast(p.active === false ? 'Patch Enabled' : 'Patch Paused');
+                });
+            },
+
+            deleteCodePatch(id) {
+                if (confirm('Delete this Find & Replace rule? User Panel will revert to original code.')) {
+                    remove(ref(db, `liveCodePatches/${id}`)).then(() => {
+                        this.showToast('Rule deleted.');
+                    });
+                }
+            },
+
+            renderCodePatches() {
+                const list = document.getElementById('adminCodePatchList');
+                if (!list) return;
+
+                const items = Object.values(state.codePatches || {}).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                if (!items.length) {
+                    list.innerHTML = `<p style="font-size: 0.8rem; color: var(--text-muted);">No saved rules yet. Create one above to modify User Panel live.</p>`;
+                    return;
+                }
+
+                list.innerHTML = items.map(p => {
+                    const isActive = p.active !== false;
+                    return `
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid ${isActive ? 'rgba(16,185,129,0.35)' : 'var(--border-glass)'}; border-radius: 12px; padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px;">
+                                <div>
+                                    <strong style="font-size: 0.9rem;">${p.title}</strong>
+                                    <span style="font-size: 0.68rem; margin-left: 6px; padding: 2px 8px; border-radius: 99px; background: ${isActive ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.08)'}; color: ${isActive ? '#10b981' : 'var(--text-muted)'};">
+                                        ${isActive ? 'ACTIVE' : 'PAUSED'}
+                                    </span>
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button class="btn-glass" style="padding: 4px 10px; font-size: 0.75rem;" onclick="app.toggleCodePatch('${p.id}')">
+                                        ${isActive ? 'Pause' : 'Enable'}
+                                    </button>
+                                    <button class="btn-glass" style="padding: 4px 10px; font-size: 0.75rem; color: var(--accent-gold);" onclick="app.editCodePatch('${p.id}')">
+                                        Edit
+                                    </button>
+                                    <button class="btn-glass" style="padding: 4px 10px; font-size: 0.75rem; color: var(--accent-red);" onclick="app.deleteCodePatch('${p.id}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            ${p.targetType !== 'css' ? `
+                                <div style="font-family: monospace; font-size: 0.75rem; background: rgba(239,68,68,0.08); color: #fca5a5; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; overflow-x: auto;">
+                                    <strong>Find:</strong> ${p.findCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                                </div>
+                            ` : ''}
+                            <div style="font-family: monospace; font-size: 0.75rem; background: rgba(16,185,129,0.08); color: #6ee7b7; padding: 6px 8px; border-radius: 6px; overflow-x: auto;">
+                                <strong>${p.targetType === 'css' ? 'CSS:' : 'Replace:'}</strong> ${(p.replaceCode || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            openModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+            },
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            },
+
+            showToast(message) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--accent-green);"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(10px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3200);
+            }
+        };
+
+        window.app = app;
+        window.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+                              </html>
